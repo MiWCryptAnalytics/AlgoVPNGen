@@ -15,6 +15,7 @@ http {
     client_body_temp_path /tmp 1 2;
     proxy_temp_path /tmp 1 2;
     fastcgi_temp_path /tmp 1 2;
+    uwsgi_temp_path /tmp 1 2;
 
 
     server {
