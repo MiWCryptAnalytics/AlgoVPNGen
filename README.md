@@ -2,17 +2,22 @@
 AlgoVPNGen - Algo VPN Generator
 Continuous Deployment Repo
 
-To build locally:
+To build and run locally:
 
-make image
+make image.web && make image.worker
 
-To run locally:
+To run web locally:
 
-make runlocal
+make run.web
 
-It will bind the application server to $PORT.
+Test a worker container run:
+
+make run.worker
+
+
+Web container will bind the application server to $PORT as per heroku runtime
 
 CircleCI config in .circleci
 
-
 Using flask, python3, uwsgi, nginx
+

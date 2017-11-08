@@ -15,15 +15,22 @@ jobs:
             docker login --username=_ --password=${HEROKU_API_TOKEN} registry.heroku.com
 
       - run:
-          name: build app image
+          name: build web image
           command: |
-            docker build -t algovpngen:$CIRCLE_BRANCH .
+            make image.web
 
       - run:
-          name: deploy app image
+          name: build worker image
           command: |
-            docker tag algovpngen:$CIRCLE_BRANCH registry.heroku.com/algovpngen/web:$CIRCLE_BRANCH 
+            make image.worker
+
+      - run:
+          name: push web and worker image
+          command: |
+            docker tag algovpngen registry.heroku.com/algovpngen/web
+            docker tag algovpngenworker registry.heroku.com/algovpngen/worker
             docker push registry.heroku.com/algovpngen/web
+            docker push registry.heroku.com/algovpngen/worker
         
       # run tests!
       - run:
