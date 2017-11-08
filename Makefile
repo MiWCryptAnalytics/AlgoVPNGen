@@ -12,7 +12,7 @@ run.workerint:
 	docker run --rm -e DO_REGION=${DO_REGION} -e DO_ACCESS_TOKEN=${DO_ACCESS_TOKEN} -e DO_SERVER_NAME="algotesting" -it ${IMAGE_NAME}worker /bin/bash
 
 image.web:
-	docker build --build-arg HTTP_PASSWD=${HTTP_PASSWD} -t ${IMAGE_NAME} -f Dockerfile .
+	docker build --build-arg HTTP_PASSWD=${HTTP_PASSWD} --build-arg HEROKU_API_KEY=${HEROKU_API_KEY} -t ${IMAGE_NAME} -f app/Dockerfile .
 
 run.web:
 	docker run --rm -e PORT=8001 -p ${DEVPORT}:${PORT} -it ${IMAGE_NAME}
