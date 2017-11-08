@@ -1,6 +1,7 @@
 user nginx;
 worker_processes  1;
-pid /run/nginx.pid;
+pid /run/uwsgi/nginx.pid;
+error_log /dev/stdout;
 
 events {
     worker_connections  1024;

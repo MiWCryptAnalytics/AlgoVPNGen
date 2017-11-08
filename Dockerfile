@@ -7,7 +7,9 @@ RUN chown -R nginx:nginx /app \
     && mkdir -p /run/uwsgi/ \
     && chown -R nginx:nginx /run/uwsgi \
     && mkdir -p /var/tmp/nginx \
-    && chown -R nginx:nginx /var/tmp/nginx
+    && chown -R nginx:nginx /var/tmp/nginx \
+    && chown -R nginx:nginx /etc/nginx/nginx.conf
 COPY nginx/nginx.conf.template /etc/nginx/nginx.conf.template
 WORKDIR /app
+USER nginx
 CMD /app/entrypoint.sh
