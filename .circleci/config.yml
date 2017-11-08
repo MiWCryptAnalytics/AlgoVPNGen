@@ -23,7 +23,7 @@ jobs:
           name: deploy app image
           command: |
             docker tag algovpngen:$CIRCLE_BRANCH registry.heroku.com/algovpngen/web:$CIRCLE_BRANCH 
-            docker push registry.heroku.com/algovpngen/web:$CIRCLE_BRANCH 
+            docker push registry.heroku.com/algovpngen/web
         
       # run tests!
       - run:
