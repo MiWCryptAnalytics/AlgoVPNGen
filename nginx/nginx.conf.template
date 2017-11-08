@@ -13,6 +13,8 @@ http {
     keepalive_timeout  65;
     gzip off;
     client_body_temp_path /tmp 1 2;
+    proxy_temp_path /tmp 1 2;
+
 
     server {
         listen $PORT;
