@@ -1,0 +1,32 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+
+      - run:
+          name: login to heroku
+          command: |
+            docker login --username=_ --password=${HEROKU_API_TOKEN} registry.heroku.com
+
+      - run:
+          name: build app image
+          command: |
+            docker build -it algovpngen:$CIRCLE_BRANCH .
+
+      - run:
+          name: deploy app image
+          command: |
+            docker tag algovpngen:$CIRCLE_BRANCH registry.heroku.com/algovpngen/web:$CIRCLE_BRANCH 
+            docker push registry.heroku.com/algovpngen/web:$CIRCLE_BRANCH 
+        
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            echo "No tests yet!"
