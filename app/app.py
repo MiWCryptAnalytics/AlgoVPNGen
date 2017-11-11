@@ -7,6 +7,7 @@ from threading import Lock
 import subprocess
 import os
 import io
+from datetime import datetime
 
 
 WTF_CSRF_SECRET_KEY = os.urandom(32)
@@ -66,12 +67,12 @@ def digitalocean():
 
 
 def ls_thread():
-    proc = subprocess.Popen('ls', stdout=subprocess.PIPE)
+    proc = subprocess.Popen(["ls", "-la", "/tmp"], stdout=subprocess.PIPE)
     for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
         socketio.emit('my_response',
                       {'data': line },
                       namespace='/tty')
-    print("ls thread for {sid} complete".format(sid=session.sid))
+    print("ls thread complete")
 
 def background_thread():
     """Example of how to send server generated events to clients."""
@@ -80,7 +81,7 @@ def background_thread():
         socketio.sleep(10)
         count += 1
         socketio.emit('my_response',
-                      {'data': 'Server generated event', 'count': count},
+                      {'data': 'Server generated event {time}'.format(time=datetime.now()), 'count': count},
                       namespace='/tty')
 
 @socketio.on('my_event', namespace='/tty')
@@ -146,7 +147,7 @@ def tty_connect():
     global thread
     with thread_lock:
         if thread is None:
-            thread = socketio.start_background_task(target=background_thread)
+            thread = socketio.start_background_task(target=ls_thread)
     emit('my_response', {'data': 'Connected {sid}'.format(sid=request.sid) })
 
 

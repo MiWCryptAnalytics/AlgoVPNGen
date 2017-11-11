@@ -41,11 +41,13 @@ The .circleci contains the CD instructions to deploy /app and /worker containers
 
 
 ## Thank you
-Trail of bits for creating algo
-Strongswan
-CircleCI
-Heroku
-Dan from ToB
+* Trail of bits for creating algo
+* Strongswan
+* CircleCI
+* Heroku
+* Dan from ToB
 
-# References
+## References
 https://mrl33h.de/post/21 Handling modal forms with Flask
+https://blog.miguelgrinberg.com/post/easy-websockets-with-flask-and-gevent
+https://github.com/trailofbits/algo/pull/331 Docker PR for algo
