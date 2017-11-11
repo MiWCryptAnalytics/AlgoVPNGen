@@ -7,4 +7,3 @@ WORKDIR /algo
 RUN python -m virtualenv env && source env/bin/activate && python -m pip install -U pip && python -m pip install -r requirements.txt
 COPY worker/doit.sh /algo
 CMD ./doit.sh
-

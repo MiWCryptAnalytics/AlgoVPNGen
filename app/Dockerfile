@@ -1,8 +1,9 @@
 # Uses alpine:edge for newer node.js (heroku)
 FROM alpine:edge
 # Install node and python for heroku/app
-RUN apk add --no-cache gettext bash nginx python3 uwsgi uwsgi-python3 openssl nodejs-current yarn expect\
-	&& pip3 install --upgrade pip
+RUN apk add --no-cache gcc musl-dev gettext bash nginx python3 python3-dev uwsgi    \
+                     uwsgi-python3 uwsgi-gevent3 openssl nodejs-current yarn expect \
+                     file libev py3-gevent && pip3 install --upgrade pip
 # Install app to container
 COPY app /app
 RUN pip3 install -r /app/requirements.txt
@@ -21,7 +22,7 @@ ARG HEROKU_API_KEY
 ENV HEROKU_API_KEY=${HEROKU_API_KEY}
 # Install Heroku CLI
 RUN yarn global add heroku-cli
-USER nginx
+#USER nginx
 WORKDIR /app
 # Run the web app (flask + uwsgi + nginx)
 CMD /app/entrypoint.sh
