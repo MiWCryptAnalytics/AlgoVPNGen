@@ -12,7 +12,7 @@ jobs:
       - run:
           name: login to heroku
           command: |
-            docker login --username=_ --password=${HEROKU_API_TOKEN} registry.heroku.com
+            docker login --username=_ --password=${HEROKU_API_KEY} registry.heroku.com
 
       - run:
           name: build web image
