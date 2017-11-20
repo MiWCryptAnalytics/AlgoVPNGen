@@ -1,6 +1,6 @@
 IMAGE_NAME=algovpngen
 PORT=8001
-DEVPORT=8000
+DEVPORT=8001
 
 image.worker:
 	docker build -t ${IMAGE_NAME}worker -f worker/Dockerfile .
@@ -19,3 +19,5 @@ run.web:
 
 run.webint:
 	docker run --rm -e PORT=${PORT} -p ${DEVPORT}:${PORT} -it ${IMAGE_NAME} /bin/bash
+
+run: image.worker image.web run.web

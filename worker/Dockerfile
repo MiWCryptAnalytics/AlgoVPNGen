@@ -1,6 +1,6 @@
 FROM alpine:latest
 LABEL name="algovpngenworker"
-RUN apk add --no-cache bash openssl openssh-client libffi python py-pip git gcc musl-dev python-dev libffi-dev openssl-dev make
+RUN apk add --no-cache bash openssl openssh-client libffi python py-pip git gcc musl-dev python-dev libffi-dev zip openssl-dev make
 RUN pip install virtualenv
 RUN git clone https://www.github.com/trailofbits/algo
 WORKDIR /algo

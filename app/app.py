@@ -1,16 +1,47 @@
 from flask import Flask, flash, redirect, request, render_template, session
+from flask_session import Session
 from flask_bootstrap import Bootstrap
 from wtforms import Form, BooleanField, StringField, SelectField, SubmitField, validators
 from flask_wtf import FlaskForm
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room, leave_room
 from threading import Lock
 import subprocess
 import os
+import shlex
 import io
+import hashlib
 from datetime import datetime
 
 
+
+# https://blog.miguelgrinberg.com/post/flask-socketio-and-the-user-session
+app = Flask(__name__)
+app.secret_key = os.urandom(32)
 WTF_CSRF_SECRET_KEY = os.urandom(32)
+app.config['SESSION_TYPE'] = 'filesystem'
+Session(app)
+socketio = SocketIO(app, manage_session=False)
+Bootstrap(app)
+
+
+# to hold global socketio thread for cmd outputs
+threads = {}
+workers = {}
+sockets = {}
+
+
+# from https://gist.github.com/ericremoreynolds/dbea9361a97179379f3b Taiiwo
+# Object that represents a socket connection
+class Socket:
+    def __init__(self, sid, namespace):
+        self.sid = sid
+        self.connected = True
+        self.namespace = namespace
+    # Emits data to a socket's unique room
+    def emit(self, event, data):
+        print("sending %s to %s" % (data, event))
+        room = hashlib.sha256(self.sid.encode('utf-8')).hexdigest()
+        emit(event, data, room=room, namespace=self.namespace)
 
 class DigitalOceanForm(FlaskForm):
     do_access_token = StringField('Digital Ocean API Token', [
@@ -30,20 +61,15 @@ class DigitalOceanForm(FlaskForm):
     submitbutton = SubmitField(label='Go')
 
 
-app = Flask(__name__)
-Bootstrap(app)
-app.secret_key = os.urandom(32)
-socketio = SocketIO(app)
-thread = None
-thread_lock = Lock()
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/build')
-def build():
-    return render_template('testwebsocket.html', async_mode=socketio.async_mode)
+#@app.route('/build')
+#def build():
+#    roomhash = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()
+#    return render_template('build.html', async_mode=socketio.async_mode, roomhash=roomhash)
 
 
 @app.route('/test')
@@ -55,8 +81,12 @@ def digitalocean():
     form = DigitalOceanForm(request.form)
     
     if form.validate_on_submit():
-        string = "Will run: %s" % build_do_cmd_string(form.do_access_token.data, form.do_region.data, form.do_server_name.data)
-        return render_template('build.html', status=string, async_mode=socketio.async_mode)
+        session['DO_ACCESS_TOKEN'] = form.do_access_token.data
+        session['DO_REGION'] = form.do_region.data
+        session['DO_SERVER_NAME'] = form.do_server_name.data
+        session['READY_TO_PROVISION'] = True
+        roomhash = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()
+        return render_template('build.html', async_mode=socketio.async_mode, roomhash=roomhash)
 
     if form.errors:
         for error_message in form.errors:
@@ -64,15 +94,65 @@ def digitalocean():
     
     return render_template('digitalocean.html', form=form)
 
+@app.route('/doaction', methods=['POST'])
+def doaction():
+  global sockets
+  if not session.sid in sockets:
+    return "Error: No connected websocket for {sid}".format(sid=session.sid)
+
+  if not ('DO_ACCESS_TOKEN' in session and 'DO_REGION' in session and 'DO_SERVER_NAME' in session):
+    return 'Error: Missing credentails'
+  
+  line = ""
+  room = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()
+    
+  if session['DO_ACCESS_TOKEN'] and session['DO_REGION'] and session['DO_SERVER_NAME']:
+    if not session['READY_TO_PROVISION']:
+      line = "You have already started the build with this session. Please log in and remove any stale server that may have been created."
+    else:
+      line = "Starting build"
+      
+      dot = shlex.quote(session['DO_ACCESS_TOKEN'])
+      dr = shlex.quote(session['DO_REGION'])
+      sn = shlex.quote(session['DO_SERVER_NAME'])
+      global workers
+      workers[session.sid]=build_do_cmd_string(dot, dr, sn)
+      session['READY_TO_PROVISION']=False
+  else:
+    line = "You are missing Cloud Provider API Credentials, Region and Servername from your session"
+  emit('my_response', {'data': line }, room=room, namespace='/tty')
+  return "OK"
 
 
-def ls_thread():
+def exec_thread(sid, shell, room):
+    splitshell = shlex.split(shell)
+    proc = subprocess.Popen(splitshell, stdout=subprocess.PIPE)
+    for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
+      socketio.emit('my_response',
+                      {'data': line }, namespace="/tty", room=room)
+    print("exec thread complete for %s" % sid)
+
+def ls_thread(sid, room):
+    global sockets
     proc = subprocess.Popen(["ls", "-la", "/tmp"], stdout=subprocess.PIPE)
     for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
         socketio.emit('my_response',
-                      {'data': line },
-                      namespace='/tty')
+                      {'data': line }, namespace="/tty", room=room)
     print("ls thread complete")
+
+def socket_thread(sid):
+    global workers
+    room = hashlib.sha256(sid.encode('utf-8')).hexdigest()
+    running = True
+    while running:
+      socketio.sleep(1)
+      if (sid in workers and workers[sid]!=None):
+        job = workers[sid]
+        print('job found, starting thread %s' % job)
+        exec_thread(shell=job,sid=sid, room=room)
+        workers[sid] = None
+    print("Socket thread for %s finished" % sid)
+    return
 
 def background_thread():
     """Example of how to send server generated events to clients."""
@@ -84,78 +164,44 @@ def background_thread():
                       {'data': 'Server generated event {time}'.format(time=datetime.now()), 'count': count},
                       namespace='/tty')
 
-@socketio.on('my_event', namespace='/tty')
-def test_message(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']})
-
-
-@socketio.on('my_broadcast_event', namespace='/tty')
-def test_broadcast_message(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']},
-         broadcast=True)
-
-
 @socketio.on('join', namespace='/tty')
-def join(message):
-    join_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': 'In rooms: ' + ', '.join(rooms()),
-          'count': session['receive_count']})
-
+def on_join(data):
+    room = data['room']
+    print(" %s joined room %s" % (session.sid, room))
+    join_room(room)
+    emit('my_response', {'data': 'Joined Room: {room}'.format(room=room) })
+    return
 
 @socketio.on('leave', namespace='/tty')
-def leave(message):
-    leave_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': 'In rooms: ' + ', '.join(rooms()),
-          'count': session['receive_count']})
-
-
-@socketio.on('close_room', namespace='/tty')
-def close(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
-                         'count': session['receive_count']},
-         room=message['room'])
-    close_room(message['room'])
-
-
-@socketio.on('my_room_event', namespace='/tty')
-def send_room_message(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']},
-         room=message['room'])
-
+def on_leave(data):
+    room = data['room']
+    leave_room(room)
+    emit('my_response', {'data': 'Left Room: {room}'.format(room=room) })
+    return
 
 @socketio.on('disconnect_request', namespace='/tty')
 def disconnect_request():
-    session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my_response',
-         {'data': 'Disconnected!', 'count': session['receive_count']})
+         {'data': 'Disconnected!'})
     disconnect()
+    return
 
 
 @socketio.on('connect', namespace='/tty')
 def tty_connect():
-    global thread
-    with thread_lock:
-        if thread is None:
-            thread = socketio.start_background_task(target=ls_thread)
-    emit('my_response', {'data': 'Connected {sid}'.format(sid=request.sid) })
+    global threads
+    global sockets
+    threads[session.sid] = socketio.start_background_task(target=socket_thread, sid=session.sid)
+    sockets[session.sid] = Socket(session.sid, '/tty')
+    emit('my_response', {'data': 'Connected {sid}'.format(sid=session.sid) })
+    return
 
-
-@socketio.on('disconnect', namespace='/test')
+@socketio.on('disconnect', namespace='/tty')
 def tty_disconnect():
     print('Client disconnected', request.sid)
 
 ## Development helper functions
 
 def build_do_cmd_string(token, region, name):
+    #return "ls -al /tmp"
     return "heroku run -a algovpngen --type worker worker -e \"DO_ACCESS_TOKEN=%s;DO_REGION=%s;DO_SERVER_NAME=%s\"" % (token, region, name)
