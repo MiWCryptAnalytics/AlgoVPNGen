@@ -51,7 +51,19 @@ class DigitalOceanForm(FlaskForm):
     ])
     do_region = SelectField(
         'Digital Ocean Region',
-        choices=[('ams1', 'Amsterdam 1'), ('ams2', 'Amsterdam 2'), ('ams3', 'Amsterdam 3')]
+        choices=[
+          ('ams2', 'Amsterdam Datacenter 2'),
+          ('ams3', 'Amsterdam Datacenter 3'),
+          ('fra1', 'Frankfurt'),
+          ('lon1', 'London'),
+          ('nyc1', 'New York Datacenter 1'),
+          ('nyc2', 'New York Datacenter 2'),
+          ('nyc3', 'San Francisco Datacenter 1'),
+          ('sfo2', 'San Francisco Datacenter 2'),
+          ('sgp1', 'Singapore'),
+          ('tor1', 'Toronto'),
+          ('blr1', 'Bangalore'),
+        ]
     )
     do_server_name = StringField("Server Name", [
         validators.InputRequired(),
@@ -121,9 +133,14 @@ def doaction():
 
 def exec_thread(sid, shell, room):
     splitshell = shlex.split(shell)
-    proc = subprocess.Popen(splitshell, bufsize=64, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
+    #proc = 
+    #for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
+    #    
+    with subprocess.Popen(splitshell, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as proc:
+      for line in iter(proc.stdout.readline, ""):
         socketio.emit('my_response', {'data': line }, namespace="/tty", room=room)
+        ## Have to sleep this thread, to let it emit to the client
+        socketio.sleep(0.01)
     print("Exec thread complete for room %s" % room)
     return
 
@@ -141,12 +158,13 @@ def socket_thread(sid):
     room = hashlib.sha256(sid.encode('utf-8')).hexdigest()
     running = True
     while running:
-      socketio.sleep(1)
+      socketio.sleep(5)
       if (sid in workers and workers[sid]!=None):
         job = workers[sid]['shell']
         name = workers[sid]['name']
         print('job found, starting thread %s' % name)
-        exec_thread(shell=job,sid=sid, room=room)
+        socketio.start_background_task(target=exec_thread, shell=job,sid=sid, room=room)
+        #exec_thread(shell=job,sid=sid, room=room)
         workers[sid] = None
     print("Socket thread complete for room %s" % room)
     return
