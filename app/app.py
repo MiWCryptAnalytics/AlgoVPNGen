@@ -110,13 +110,12 @@ def doaction():
     if not session['READY_TO_PROVISION']:
       line = "You have already started the build with this session. Please log in and remove any stale server that may have been created."
     else:
-      line = "Starting build"
-      
+      line = "Starting build...\n(This can take a few seconds to get started...)\n"
       dot = shlex.quote(session['DO_ACCESS_TOKEN'])
       dr = shlex.quote(session['DO_REGION'])
       sn = shlex.quote(session['DO_SERVER_NAME'])
       global workers
-      workers[session.sid]=build_do_cmd_string(dot, dr, sn)
+      workers[session.sid] = {'shell': build_do_cmd_string(dot, dr, sn), 'name': 'Run heroku to build %s in %s' % (sn, dr)}
       session['READY_TO_PROVISION']=False
   else:
     line = "You are missing Cloud Provider API Credentials, Region and Servername from your session"
@@ -147,8 +146,9 @@ def socket_thread(sid):
     while running:
       socketio.sleep(1)
       if (sid in workers and workers[sid]!=None):
-        job = workers[sid]
-        print('job found, starting thread %s' % job)
+        job = workers[sid]['shell']
+        name = workers[sid]['name']
+        print('job found, starting thread %s' % name)
         exec_thread(shell=job,sid=sid, room=room)
         workers[sid] = None
     print("Socket thread for %s finished" % sid)
