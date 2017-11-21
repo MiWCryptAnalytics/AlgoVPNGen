@@ -25,7 +25,10 @@
             
 
             socket.emit('join', {room: '{{ roomhash }}'});
-            
+             // rejoin if there's a disconnect
+            socket.on('reconnect', () => {
+                socket.emit('join', {room: '{{ roomhash }}'})
+            });
 
             $("#doaction").click(function(e) {
                 e.preventDefault();
