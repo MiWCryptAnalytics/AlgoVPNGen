@@ -11,6 +11,7 @@ import shlex
 import io
 import hashlib
 from datetime import datetime
+import time
 
 
 
@@ -19,8 +20,9 @@ app = Flask(__name__)
 app.secret_key = os.urandom(32)
 WTF_CSRF_SECRET_KEY = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 Session(app)
-socketio = SocketIO(app, manage_session=False)
+socketio = SocketIO(app, manage_session=False, ping_timeout=30, ping_interval=5)
 Bootstrap(app)
 
 
@@ -135,12 +137,15 @@ def exec_thread(sid, shell, room):
     splitshell = shlex.split(shell)
     #proc = 
     #for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
-    #    
+    #
+    starttime = time.perf_counter()    
     with subprocess.Popen(splitshell, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as proc:
       for line in iter(proc.stdout.readline, ""):
         socketio.emit('my_response', {'data': line }, namespace="/tty", room=room)
         ## Have to sleep this thread, to let it emit to the client
         socketio.sleep(0.01)
+    endtime = time.perf_counter()
+    print("Exec took %s seconds" % (endtime-starttime))
     print("Exec thread complete for room %s" % room)
     return
 

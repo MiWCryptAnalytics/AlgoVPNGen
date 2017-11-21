@@ -34,11 +34,22 @@ Standard output from the container is sent to the web client via a websocket con
 After execution of algo, contents of the data directory is displayed as base64 encoded blob.
 The command to convert this back to a file in linux, macos and windows is then displayed.
 
-
 ## CD Build
 
 The .circleci contains the CD instructions to deploy /app and /worker containers into heroku.
 
+
+## Threat Model and Security
+The web application itself has a limited input surface area for user input, tokens and params.
+These are all validated by WTForms, which should prevent 
+
+## Privacy
+This tool requires access to your cloud provider access code, usually an API key or Access/Secret Key.
+It is stored temporarily in a server side session object with a lifetime of 1 hour.
+This is not logged during runtime of the application, and it cleared from the sesion as soon as the build has begin.
+
+The runtime environment of the app is a Docker container on the Heroku infrastructure. Because containers are ephemeral,
+it is possible the session data may be cleared even more frequently than 1 hour.
 
 ## Thank you
 * Trail of bits for creating algo

@@ -1,0 +1,22 @@
+@import url(https://fonts.googleapis.com/css?family=Inconsolata);
+
+.code-log {
+        display: block;
+        white-space: pre-wrap;
+        font-family: 'Inconsolata';
+        font-size: 125%;
+    }
+.scroll-div {
+        position: relative;
+        margin-top: 10px;
+        height: 80%;
+        max-height: 600px;
+        overflow-y: scroll;
+    }
+
+
+
+body {
+	background-image: url("/static/build-bg.png");
+    background-repeat: repeat
+}
