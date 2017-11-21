@@ -125,11 +125,11 @@ def doaction():
 
 def exec_thread(sid, shell, room):
     splitshell = shlex.split(shell)
-    proc = subprocess.Popen(splitshell, stdout=subprocess.PIPE)
+    proc = subprocess.Popen(splitshell, bufsize=64, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
-      socketio.emit('my_response',
-                      {'data': line }, namespace="/tty", room=room)
-    print("exec thread complete for %s" % sid)
+        socketio.emit('my_response', {'data': line }, namespace="/tty", room=room)
+    print("Exec thread complete for room %s" % room)
+    return
 
 def ls_thread(sid, room):
     global sockets
@@ -138,6 +138,7 @@ def ls_thread(sid, room):
         socketio.emit('my_response',
                       {'data': line }, namespace="/tty", room=room)
     print("ls thread complete")
+    return
 
 def socket_thread(sid):
     global workers
@@ -151,7 +152,7 @@ def socket_thread(sid):
         print('job found, starting thread %s' % name)
         exec_thread(shell=job,sid=sid, room=room)
         workers[sid] = None
-    print("Socket thread for %s finished" % sid)
+    print("Socket thread complete for room %s" % room)
     return
 
 def background_thread():
@@ -163,13 +164,14 @@ def background_thread():
         socketio.emit('my_response',
                       {'data': 'Server generated event {time}'.format(time=datetime.now()), 'count': count},
                       namespace='/tty')
+    return
 
 @socketio.on('join', namespace='/tty')
 def on_join(data):
     room = data['room']
-    print(" %s joined room %s" % (session.sid, room))
     join_room(room)
     emit('my_response', {'data': 'Joined Room: {room}'.format(room=room) })
+    print("SocketIO: Room %s was joined by %s" % (room, request.remote_addr))
     return
 
 @socketio.on('leave', namespace='/tty')
@@ -177,6 +179,7 @@ def on_leave(data):
     room = data['room']
     leave_room(room)
     emit('my_response', {'data': 'Left Room: {room}'.format(room=room) })
+    print("SocketIO: Room %s was left by %s" % (room, request.remote_addr))
     return
 
 @socketio.on('disconnect_request', namespace='/tty')
@@ -194,11 +197,13 @@ def tty_connect():
     threads[session.sid] = socketio.start_background_task(target=socket_thread, sid=session.sid)
     sockets[session.sid] = Socket(session.sid, '/tty')
     emit('my_response', {'data': 'Connected {sid}'.format(sid=session.sid) })
+    print('SocketIO: client connected %s' % request.remote_addr)
     return
 
 @socketio.on('disconnect', namespace='/tty')
 def tty_disconnect():
-    print('Client disconnected', request.sid)
+    print('SocketIO: client disconnected %s' % request.remote_addr)
+    return
 
 ## Development helper functions
 
