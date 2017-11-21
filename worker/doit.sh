@@ -27,10 +27,11 @@ function compress_and_display(){
 source env/bin/activate
 ansible-playbook deploy.yml -t digitalocean,vpn,cloud -e "do_access_token=${DO_ACCESS_TOKEN} do_server_name=${DO_SERVER_NAME} do_region=${DO_REGION}"
 retVal=$?
-if [ ! $? -eq 0 ]; then
+if [ ! $retVal -eq 0 ]; then
     echo "Sorry, there was a problem running algo. Check for an incorrect API token."
     exit $retVal
 fi
+
 compress_and_display
 echo ""
 echo ""
