@@ -108,20 +108,16 @@ def doaction():
     
   if session['DO_ACCESS_TOKEN'] and session['DO_REGION'] and session['DO_SERVER_NAME']:
     if not session['READY_TO_PROVISION']:
-      line = "You have already started the build with this session. Please log in and remove any stale server that may have been created."
+      return "You have already started the build with this session. Please log in to your provider and remove any stale server that may have been created."
     else:
-      line = "Starting build...\n(This can take a few seconds to get started...)\n"
       dot = shlex.quote(session['DO_ACCESS_TOKEN'])
       dr = shlex.quote(session['DO_REGION'])
       sn = shlex.quote(session['DO_SERVER_NAME'])
       global workers
       workers[session.sid] = {'shell': build_do_cmd_string(dot, dr, sn), 'name': 'Run heroku to build %s in %s' % (sn, dr)}
       session['READY_TO_PROVISION']=False
-  else:
-    line = "You are missing Cloud Provider API Credentials, Region and Servername from your session"
-  emit('my_response', {'data': line }, room=room, namespace='/tty')
-  return "OK"
-
+      return "Starting build...\n(This can take a few seconds to get started...)\n"
+  return "You are missing Cloud Provider API Credentials, Region or Servername from your session"
 
 def exec_thread(sid, shell, room):
     splitshell = shlex.split(shell)
