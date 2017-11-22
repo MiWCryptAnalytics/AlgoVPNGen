@@ -5,6 +5,7 @@
         white-space: pre-wrap;
         font-family: 'Inconsolata';
         font-size: 125%;
+        opacity: 0.8;
     }
 .scroll-div {
         position: relative;

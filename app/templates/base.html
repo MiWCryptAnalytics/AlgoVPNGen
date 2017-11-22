@@ -11,9 +11,8 @@
     {%- endblock metas %}
 
     {%- block styles %}
-    <!-- Bootstrap -->
-    <link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
     <link href="/static/algovpngen.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     {%- endblock styles %}
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
@@ -21,12 +20,15 @@
     <meta name="msapplication-TileColor" content="#FFFFFF">
     <meta name="msapplication-TileImage" content="/static/favicon-144.png">
     {% block scripts %}
-    <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
-    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+        {% include 'bootstrap.html' %}
     {%- endblock scripts %}
     {%- endblock head %}
   </head>
   <body{% block body_attribs %}{% endblock body_attribs %}>
+  <div class="alert alert-info">
+  This site is an alpha. Please report any issues to @_MiW on <a href='https://twitter.com/_MiW'>twitter</a> or <a href='https://github.com/MiWCryptAnalytics/AlgoVPNGen'>github project<a>
+  </div>  
     {% block body -%}
     {% block navbar %}
     {%- endblock navbar %}

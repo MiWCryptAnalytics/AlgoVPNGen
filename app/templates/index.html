@@ -1,9 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
+
 <div class="container-fluid">
 	<div class="col-lg-6 col-offset-6 centered">
 		<img src='/static/logo.png'>
-		<h2>Build your algo vpn on <a href=digitalocean>Digital Ocean</a></h2>
 	</div>
+	<div class="p-3"></div>
+	<div class="card" style="width: 20rem;">
+	  <img class="card-img-top" src="/static/ocean.png" alt="Digital Ocean">
+	  <div class="card-block">
+	    <h4 class="card-title">Digital Ocean</h4>
+	    <p class="card-text">Build your algo vpn on <a href='https://www.digitalocean.com/'>Digital Ocean</a></p>
+	    <a href='/digitalocean' id="digitalocean" class="btn btn-primary">Build</a>
+	  </div>
 </div>
 {% endblock %}

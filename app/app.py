@@ -75,15 +75,14 @@ class DigitalOceanForm(FlaskForm):
     submitbutton = SubmitField(label='Go')
 
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
 
-#@app.route('/build')
-#def build():
-#    roomhash = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()
-#    return render_template('build.html', async_mode=socketio.async_mode, roomhash=roomhash)
+@app.route('/random')
+def build():
+    roomhash = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()
+    return render_template('build.html', async_mode=socketio.async_mode, roomhash=roomhash, action="/genrandom", title="Generate Randomness")
 
 
 @app.route('/test')
@@ -100,13 +99,16 @@ def digitalocean():
         session['DO_SERVER_NAME'] = form.do_server_name.data
         session['READY_TO_PROVISION'] = True
         roomhash = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()
-        return render_template('build.html', async_mode=socketio.async_mode, roomhash=roomhash)
+        return render_template('build.html', async_mode=socketio.async_mode, roomhash=roomhash, action="/doaction", title="Digital Ocean - Algo VPN Gen")
 
     if form.errors:
         for error_message in form.errors:
             flash("error : {error}".format(error=error_message))
     
     return render_template('digitalocean.html', form=form)
+
+
+### AJAX METHODS
 
 @app.route('/doaction', methods=['POST'])
 def doaction():
@@ -128,10 +130,23 @@ def doaction():
       dr = shlex.quote(session['DO_REGION'])
       sn = shlex.quote(session['DO_SERVER_NAME'])
       global workers
-      workers[session.sid] = {'shell': build_do_cmd_string(dot, dr, sn), 'name': 'Run heroku to build %s in %s' % (sn, dr)}
+      workers[session.sid] = {'cmd': build_do_cmd_string(dot, dr, sn), 'name': 'Run heroku to build %s in %s' % (sn, dr)}
       session['READY_TO_PROVISION']=False
       return "Starting build...\n(This can take a few seconds to get started...)\n"
   return "You are missing Cloud Provider API Credentials, Region or Servername from your session"
+
+@app.route('/genrandom', methods=['POST'])
+def dotest():
+  global sockets
+  if not session.sid in sockets:
+    return "Error: No connected websocket for {sid}".format(sid=session.sid)
+  line = ""
+  room = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()      
+  global workers
+  workers[session.sid] = {'cmd': "openssl rand -base64 2048", 'name': 'Generate Randomness'}
+  return "Generating randomness\n"  
+
+### Thread handling methods
 
 def exec_thread(sid, shell, room):
     splitshell = shlex.split(shell)
@@ -142,8 +157,8 @@ def exec_thread(sid, shell, room):
     with subprocess.Popen(splitshell, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as proc:
       for line in iter(proc.stdout.readline, ""):
         socketio.emit('my_response', {'data': line }, namespace="/tty", room=room)
-        ## Have to sleep this thread, to let it emit to the client
-        socketio.sleep(0.01)
+        ## Have to sleep for 0 to flush buffer, to let it emit to the client
+        socketio.sleep(0)
     endtime = time.perf_counter()
     print("Exec took %s seconds" % (endtime-starttime))
     print("Exec thread complete for room %s" % room)
@@ -163,9 +178,9 @@ def socket_thread(sid):
     room = hashlib.sha256(sid.encode('utf-8')).hexdigest()
     running = True
     while running:
-      socketio.sleep(5)
+      socketio.sleep(1)
       if (sid in workers and workers[sid]!=None):
-        job = workers[sid]['shell']
+        job = workers[sid]['cmd']
         name = workers[sid]['name']
         print('job found, starting thread %s' % name)
         socketio.start_background_task(target=exec_thread, shell=job,sid=sid, room=room)
@@ -173,6 +188,7 @@ def socket_thread(sid):
         workers[sid] = None
     print("Socket thread complete for room %s" % room)
     return
+
 
 def background_thread():
     """Example of how to send server generated events to clients."""
@@ -185,11 +201,13 @@ def background_thread():
                       namespace='/tty')
     return
 
+## Socket io things
+
 @socketio.on('join', namespace='/tty')
 def on_join(data):
     room = data['room']
     join_room(room)
-    emit('my_response', {'data': 'Joined Room: {room}'.format(room=room) })
+    emit('my_response', {'data': 'Joined Room: {room}\n'.format(room=room) })
     print("SocketIO: Room %s was joined by %s" % (room, request.remote_addr))
     return
 
@@ -215,7 +233,7 @@ def tty_connect():
     global sockets
     threads[session.sid] = socketio.start_background_task(target=socket_thread, sid=session.sid)
     sockets[session.sid] = Socket(session.sid, '/tty')
-    emit('my_response', {'data': 'Connected {sid}'.format(sid=session.sid) })
+    emit('my_response', {'data': 'Connected {sid}\n'.format(sid=session.sid) })
     print('SocketIO: client connected %s' % request.remote_addr)
     return
 
@@ -223,6 +241,7 @@ def tty_connect():
 def tty_disconnect():
     print('SocketIO: client disconnected %s' % request.remote_addr)
     return
+
 
 ## Development helper functions
 

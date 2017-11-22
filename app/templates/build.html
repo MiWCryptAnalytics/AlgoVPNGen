@@ -1,15 +1,5 @@
 {% extends "base.html" %}
 
-{% block scripts %}
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
-<script
-  src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-  integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
-  crossorigin="anonymous"></script>
-<script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
-<script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
-{% endblock %}
-
 {% block content %}
     <script type="text/javascript" charset="utf-8">
 
@@ -19,11 +9,10 @@
             var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
             socket.on('my_response', function(msg) {
-               $('#log').append('\n' + msg.data);
+               $('#log').append(msg.data);
                         $('#logcontainer').animate({scrollTop: $('#log').prop("scrollHeight")}, 1);
             });
             
-
             socket.emit('join', {room: '{{ roomhash }}'});
              // rejoin if there's a disconnect
             socket.on('reconnect', () => {
@@ -34,16 +23,16 @@
                 e.preventDefault();
                 $.ajax({
                     type: "POST",
-                    url: "/doaction",
+                    url: "{{ action }}",
                     data: { 
                         id: $(this).val()
                     },
                     success: function(result) {
-                        $('#log').append('\n' + result);
+                        $('#log').append(result);
                         $('#logcontainer').animate({scrollTop: $('#log').prop("scrollHeight")}, 1);
                     },
                     error: function(result) {
-                        $('#log').append('\n' + result);
+                        $('#log').append(result);
                         $('#logcontainer').animate({scrollTop: $('#log').prop("scrollHeight")}, 1);
                     }
                 });
@@ -61,9 +50,9 @@
 
     </script>
 
-    <p>Async mode is: <b>{{ async_mode }}</b></p>
+    <!-- Async mode is: {{ async_mode }} -->
     <div class="container-fluid">  
-    <h2>Digital Ocean - Algo VPN Gen</h2>
+    <h2>{{ title }}</h2>
     </div>
     <div class="container-fluid">  
         <div class="span12">
@@ -71,9 +60,9 @@
             <button class="btn" id="reset" style="box-shadow: rgb(138, 42, 33) 2px 2px 10px -1px; background: linear-gradient(rgb(198, 45, 31) 5%, rgb(242, 68, 55) 100%) rgb(198, 45, 31); border-radius: 42px; display: inline-block; cursor: pointer; color: rgb(255, 255, 255); font-family: Arial; font-size: 19px; padding: 33px 18px; text-decoration: none;">Reset</button>
         </div>
         
-        <div class="scroll-div pre-scrollable span12" style="border: 2px solid black" id="logcontainer" >
-            <code id="log" class="code-log">
-            </code>
+        <div class="scroll-div span12" style="border: 2px solid black" id="logcontainer" >
+<code id="log" class="code-log">
+</code>
         </div>
     </div>
     
