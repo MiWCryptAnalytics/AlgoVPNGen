@@ -41,7 +41,8 @@ The .circleci contains the CD instructions to deploy /app and /worker containers
 
 ## Threat Model and Security
 The web application itself has a limited input surface area for user input, tokens and params.
-These are all validated by WTForms, which should prevent 
+These are all validated by WTForms, which should prevent unsafe characters from being injected.
+Additionally, the input command is sanitized with shlex.quote().
 
 ## Privacy
 This tool requires access to your cloud provider access code, usually an API key or Access/Secret Key.
@@ -62,3 +63,5 @@ it is possible the session data may be cleared even more frequently than 1 hour.
 https://mrl33h.de/post/21 Handling modal forms with Flask
 https://blog.miguelgrinberg.com/post/easy-websockets-with-flask-and-gevent
 https://github.com/trailofbits/algo/pull/331 Docker PR for algo
+
+Logo generated with https://logomakr.com

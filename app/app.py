@@ -105,8 +105,7 @@ def digitalocean():
         for error_message in form.errors:
             flash("error : {error}".format(error=error_message))
     
-    return render_template('digitalocean.html', form=form)
-
+    return render_template('digitalocean.html', form=form, title="Algo @ Digital Ocean - Please enter build settings:")
 
 ### AJAX METHODS
 
@@ -130,10 +129,13 @@ def doaction():
       dr = shlex.quote(session['DO_REGION'])
       sn = shlex.quote(session['DO_SERVER_NAME'])
       global workers
-      workers[session.sid] = {'cmd': build_do_cmd_string(dot, dr, sn), 'name': 'Run heroku to build %s in %s' % (sn, dr)}
       session['READY_TO_PROVISION']=False
+      workers[session.sid] = {'cmd': build_do_cmd_string(dot, dr, sn), 'name': 'Run heroku to build %s in %s' % (sn, dr)}
+      session['DO_ACCESS_TOKEN']=None
+      session['DO_REGION']=None
+      session['DO_SERVER_NAME']=None
       return "Starting build...\n(This can take a few seconds to get started...)\n"
-  return "You are missing Cloud Provider API Credentials, Region or Servername from your session"
+  return "You are missing Cloud Provider API Credentials, Region or Servername from your session. Please reset."
 
 @app.route('/genrandom', methods=['POST'])
 def dotest():
