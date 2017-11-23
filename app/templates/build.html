@@ -1,52 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div class="small">
+        Async mode is: <b>{{ async_mode }} </b>Average ping/pong latency: <b><span id="ping-pong"></span> ms</b>
+    </div> 
     <script type="text/javascript" charset="utf-8">
 
-         $(document).ready(function() {
-            
-            var namespace = '/tty';
-            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
-
-            socket.on('my_response', function(msg) {
-               $('#log').append(msg.data);
-                        $('#logcontainer').animate({scrollTop: $('#log').prop("scrollHeight")}, 1);
-            });
-            
-            socket.emit('join', {room: '{{ roomhash }}'});
-             // rejoin if there's a disconnect
-            socket.on('reconnect', () => {
-                socket.emit('join', {room: '{{ roomhash }}'})
-            });
-
-            $("#doaction").click(function(e) {
-                e.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: "{{ action }}",
-                    data: { 
-                        id: $(this).val()
-                    },
-                    success: function(result) {
-                        $('#log').append(result);
-                        $('#logcontainer').animate({scrollTop: $('#log').prop("scrollHeight")}, 1);
-                    },
-                    error: function(result) {
-                        $('#log').append(result);
-                        $('#logcontainer').animate({scrollTop: $('#log').prop("scrollHeight")}, 1);
-                    }
-                });
-            });
-
-            $("#reset").click(function(e) {
-                e.preventDefault();
-                // as we got here via a post, we can't just reload()
-                window.location.href=window.location.href
-            });
-
-
-
-        });
+         {% include "socketioscroller.js" %}
 
     </script>
 

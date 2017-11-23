@@ -213,6 +213,10 @@ def on_join(data):
     print("SocketIO: Room %s was joined by %s" % (room, request.remote_addr))
     return
 
+@socketio.on('my_ping', namespace='/tty')
+def ping_pong():
+    emit('my_pong')
+
 @socketio.on('leave', namespace='/tty')
 def on_leave(data):
     room = data['room']
