@@ -3,3 +3,4 @@ flask_wtf
 Flask-Bootstrap
 flask-socketio
 Flask-Session
+eventlet

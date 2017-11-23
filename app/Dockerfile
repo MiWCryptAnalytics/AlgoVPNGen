@@ -2,7 +2,7 @@
 FROM alpine:edge
 # Install node and python for heroku/app
 RUN apk add --no-cache gcc musl-dev gettext bash nginx python3 python3-dev   \
-                       uwsgi uwsgi-python3 uwsgi-gevent3 uwsgi-http openssl  \
+                       py3-gunicorn openssl  \
                        nodejs-current yarn expect file libev \
                        py3-gevent && pip3 install --upgrade pip
 # Install app to container
