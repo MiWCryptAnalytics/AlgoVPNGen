@@ -13,7 +13,8 @@ function compress_and_display(){
 	echo "1. Scroll up to the section headed 'Congratulations!'  Your Algo server is running"
 	echo "   and record the p12/ssh password, and the CA key password."
 	echo ""
-	echo "2. Copy the text from between the ALGO CONFIG ZIP sections. Save to a file named config.txt"
+	echo "2. Copy the text from between the ALGO CONFIG ZIP sections. (Dont include the --START COPY and --END COPY lines)."
+	echo "   Save to a file named config.txt"
 	echo "   This is a compressed encoded file containing the algo configuration, including scripts and authentication keys"
 	echo ""
 	echo "3. Decode and uncompress the configuration files"
@@ -27,13 +28,15 @@ function compress_and_display(){
 	echo "   powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('configs.zip', 'algo-configs'); }\""
 	echo "   ..."
 	echo "   lol j/k use unzip with explorer"
+	echo "--------------------------------------------"
+
 }
 
 source env/bin/activate
 ansible-playbook deploy.yml -t digitalocean,vpn,cloud -e "do_access_token=${DO_ACCESS_TOKEN} do_server_name=${DO_SERVER_NAME} do_region=${DO_REGION}"
 retVal=$?
 if [ ! $retVal -eq 0 ]; then
-    echo "Sorry, there was a problem running algo. Check for an incorrect API token."
+    echo "Sorry, there was a problem running algo. Review any errors above. Check for an incorrect API token, or cloud provider maintenance."
     exit $retVal
 fi
 
