@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, request, render_template, session
 from flask_session import Session
-# from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap
 from wtforms import Form, BooleanField, StringField, SelectField, SubmitField, validators
 from flask_wtf import FlaskForm
 from flask_socketio import SocketIO, emit, join_room, leave_room
@@ -24,7 +24,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 Session(app)
 # add engineio_logger=True to debug socketio
 socketio = SocketIO(app, manage_session=False, ping_timeout=30, ping_interval=5, )
-# Bootstrap(app)
+Bootstrap(app)
 
 
 # to hold global socketio thread for cmd outputs
@@ -153,15 +153,19 @@ def dotest():
 
 def exec_thread(sid, shell, room):
     splitshell = shlex.split(shell)
-    #proc = 
-    #for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
+    
     #
-    starttime = time.perf_counter()    
-    with subprocess.Popen(splitshell, bufsize=0, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as proc:
-      for line in iter(proc.stdout.readline, ""):
-        socketio.emit('my_response', {'data': line.rstrip() }, namespace="/tty", room=room)
-        ## Have to sleep for 0 to flush buffer, to let it emit to the client
-        socketio.sleep(0)
+    starttime = time.perf_counter()
+    proc = subprocess.Popen(splitshell, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
+      socketio.emit('my_response', {'data': line.rstrip() }, namespace="/tty", room=room)
+      ## Have to sleep for 0 to flush buffer, to let it emit to the client
+      socketio.sleep(0.01)
+    #with subprocess.Popen(splitshell, bufsize=0, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as proc:
+    #  for line in iter(proc.stdout.readline, ""):
+    #    socketio.emit('my_response', {'data': line.rstrip() }, namespace="/tty", room=room)
+    #    ## Have to sleep for 0 to flush buffer, to let it emit to the client
+    #    socketio.sleep(0)
     endtime = time.perf_counter()
     print("Exec took %s seconds" % (endtime-starttime))
     print("Exec thread complete for room %s" % room)
