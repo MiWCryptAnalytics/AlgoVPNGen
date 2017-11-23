@@ -22,7 +22,7 @@ WTF_CSRF_SECRET_KEY = os.urandom(32)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 Session(app)
-socketio = SocketIO(app, manage_session=False, ping_timeout=30, ping_interval=5)
+socketio = SocketIO(app, manage_session=False, ping_timeout=30, ping_interval=5, engineio_logger=True)
 Bootstrap(app)
 
 
