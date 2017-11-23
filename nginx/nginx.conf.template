@@ -46,7 +46,7 @@ http {
         }
 
         location /favicon.ico {
-            alias /app/static/favico.ico;
+            alias /app/static/favicon.ico;
         }
 
         location /socket.io {
