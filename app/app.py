@@ -191,8 +191,8 @@ def socket_thread(sid):
         name = workers[sid]['name']
         print('job found, starting thread %s' % name)
         #socketio.start_background_task(target=exec_thread, shell=job,sid=sid, room=room)
-        exec_thread(shell=job,sid=sid, room=room)
         workers[sid] = None
+        exec_thread(shell=job,sid=sid, room=room)
     print("Socket thread complete for room %s" % room)
     return
 
