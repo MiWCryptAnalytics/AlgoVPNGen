@@ -160,7 +160,7 @@ def exec_thread(sid, shell, room):
       for line in iter(proc.stdout.readline, ""):
         socketio.emit('my_response', {'data': line.rstrip() }, namespace="/tty", room=room)
         ## Have to sleep for 0 to flush buffer, to let it emit to the client
-        socketio.sleep(0)
+        socketio.sleep(0.1)
     endtime = time.perf_counter()
     print("Exec took %s seconds" % (endtime-starttime))
     print("Exec thread complete for room %s" % room)
@@ -180,13 +180,13 @@ def socket_thread(sid):
     room = hashlib.sha256(sid.encode('utf-8')).hexdigest()
     running = True
     while running:
-      socketio.sleep(1)
+      socketio.sleep(5)
       if (sid in workers and workers[sid]!=None):
         job = workers[sid]['cmd']
         name = workers[sid]['name']
         print('job found, starting thread %s' % name)
-        socketio.start_background_task(target=exec_thread, shell=job,sid=sid, room=room)
-        #exec_thread(shell=job,sid=sid, room=room)
+        #socketio.start_background_task(target=exec_thread, shell=job,sid=sid, room=room)
+        exec_thread(shell=job,sid=sid, room=room)
         workers[sid] = None
     print("Socket thread complete for room %s" % room)
     return
