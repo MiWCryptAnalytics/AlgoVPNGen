@@ -99,3 +99,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# flask session
+flask_session/
