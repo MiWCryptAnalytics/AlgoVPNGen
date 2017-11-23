@@ -156,9 +156,9 @@ def exec_thread(sid, shell, room):
     #for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
     #
     starttime = time.perf_counter()    
-    with subprocess.Popen(splitshell, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as proc:
+    with subprocess.Popen(splitshell, bufsize=0, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as proc:
       for line in iter(proc.stdout.readline, ""):
-        socketio.emit('my_response', {'data': line }, namespace="/tty", room=room)
+        socketio.emit('my_response', {'data': line.rstrip() }, namespace="/tty", room=room)
         ## Have to sleep for 0 to flush buffer, to let it emit to the client
         socketio.sleep(0)
     endtime = time.perf_counter()
@@ -209,7 +209,7 @@ def background_thread():
 def on_join(data):
     room = data['room']
     join_room(room)
-    emit('my_response', {'data': 'Joined Room: {room}\n'.format(room=room) })
+    emit('my_response', {'data': 'Joined Room: {room}'.format(room=room) })
     print("SocketIO: Room %s was joined by %s" % (room, request.remote_addr))
     return
 
@@ -239,7 +239,7 @@ def tty_connect():
     global sockets
     threads[session.sid] = socketio.start_background_task(target=socket_thread, sid=session.sid)
     sockets[session.sid] = Socket(session.sid, '/tty')
-    emit('my_response', {'data': 'Connected {sid}\n'.format(sid=session.sid) })
+    emit('my_response', {'data': 'Connected {sid}'.format(sid=session.sid) })
     print('SocketIO: client connected %s' % request.remote_addr)
     return
 

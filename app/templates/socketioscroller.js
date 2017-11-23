@@ -4,8 +4,8 @@ $(document).ready(function() {
             var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
             socket.on('my_response', function(msg) {
-               $('#log').append(msg.data);
-                        $('#logcontainer').animate({scrollTop: $('#log').prop("scrollHeight")}, 1);
+               $('#log').append(msg.data + '\n');
+               $('#logcontainer').animate({scrollTop: $('#log').prop("scrollHeight")}, 1);
             });
             
             socket.emit('join', {room: '{{ roomhash }}'});
@@ -19,8 +19,8 @@ $(document).ready(function() {
             window.setInterval(function() {
                 start_time = (new Date).getTime();
                 socket.emit('my_ping');
-            }, 1000);
-            
+            }, 5000);
+
             socket.on('my_pong', function() {
                 var latency = (new Date).getTime() - start_time;
                 ping_pong_times.push(latency);
@@ -40,11 +40,11 @@ $(document).ready(function() {
                         id: $(this).val()
                     },
                     success: function(result) {
-                        $('#log').append(result);
+                        $('#log').append(result + '\n');
                         $('#logcontainer').animate({scrollTop: $('#log').prop("scrollHeight")}, 1);
                     },
                     error: function(result) {
-                        $('#log').append(result);
+                        $('#log').append(result + '\n');
                         $('#logcontainer').animate({scrollTop: $('#log').prop("scrollHeight")}, 1);
                     }
                 });
