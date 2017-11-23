@@ -6,9 +6,9 @@ $(document).ready(function() {
                 "force new connection" : true,
                 "reconnection": true,
                 "reconnectionDelay": 2000,                  //starts with 2 secs delay, then 4, 6, 8, until 60 where it stays forever until it reconnects
-                "reconnectionDelayMax" : 60000,             //1 minute maximum delay between connections
+                "reconnectionDelayMax" : 30000,             //30 seconds maximum delay between connections
                 "reconnectionAttempts": "Infinity",         //to prevent dead clients, having the user to having to manually reconnect after a server restart.
-                "timeout" : 10000,                           //before connect_error and connect_timeout are emitted.
+                "timeout" : 5000,                           //5 seconds before connect_error and connect_timeout are emitted.
                 "transports" : ["websocket"]                //forces the transport to be only websocket. Server needs to be setup as well/
             }
 
@@ -43,6 +43,7 @@ $(document).ready(function() {
                 $('#ping-pong').text(Math.round(10 * sum / ping_pong_times.length) / 10);
             });
 
+                        
             $("#doaction").click(function(e) {
                 e.preventDefault();
                 $.ajax({

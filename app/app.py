@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, request, render_template, session
 from flask_session import Session
-from flask_bootstrap import Bootstrap
+# from flask_bootstrap import Bootstrap
 from wtforms import Form, BooleanField, StringField, SelectField, SubmitField, validators
 from flask_wtf import FlaskForm
 from flask_socketio import SocketIO, emit, join_room, leave_room
@@ -24,7 +24,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 Session(app)
 # add engineio_logger=True to debug socketio
 socketio = SocketIO(app, manage_session=False, ping_timeout=30, ping_interval=5, )
-Bootstrap(app)
+# Bootstrap(app)
 
 
 # to hold global socketio thread for cmd outputs
