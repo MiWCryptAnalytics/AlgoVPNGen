@@ -314,11 +314,11 @@ def ansible_emojize(to_emojize):
   fitz = "🏻🏼🏽🏾🏿"
   replacements = {
     "\u001b[0m":"",
-    "\u001b[0;32m":"🥦🌲🌵🍏🐲",
-    "\u001b[0;33m":"🥨🍁🍪📙🔶",
+    "\u001b[0;32m":["🥦","🌲","🌵","🍏","🐲"],
+    "\u001b[0;33m":["🥨","🍁","🍪","📙","🔶"],
     "\u001b[0;36m":["🧙","🧞‍♀️","🧞‍♂️","👮"],
     "\u001b[1;30m":"👹👺💔😠🚩",
-    "TASK ": ['👷'+'\u200D'+secrets.choice(fitz)+'️\uFE0F'+"TASK ","👷"+'\u200D'+secrets.choice(fitz)+'\u200D'+'♀'+'️\uFE0F'+"TASK "],
+    "TASK ": ['👷'+secrets.choice(fitz)+'️\uFE0F'+"TASK ","👷"+secrets.choice(fitz)+'\u200D'+'♀'+'️\uFE0F'+"TASK "],
     "RUNNING HANDLER ": ["👩"+secrets.choice(fitz)+'\u200D'+"✈"+'️\uFE0F'+"RUNNING HANDLER ","👨"+secrets.choice(fitz)+'\u200D'+"✈"+'️\uFE0F'+"RUNNING HANDLER "]
   }
 
@@ -329,9 +329,9 @@ def ansible_emojize(to_emojize):
   for r in replacements.keys():
     if r in output:
       if (len(replacements[r])):
-        rd = secrets.choice(replacements[r])
+        rd = secrets.choice(replacements[r])+" "
       else:
         rd = replacements[r]
-      output = output.replace(r, rd)
+      output = output.replace(r, rd)+" "
  
   return output
