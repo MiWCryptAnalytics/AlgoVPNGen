@@ -319,11 +319,11 @@ def ansible_emojize(to_emojize):
   fitz = "🏻🏼🏽🏾🏿"
   replacements = {
     "\u001b[0m":"",
-    "\u001b[0;31m":["👠","🦀","🍒","🚨","⛔"],
-    "\u001b[0;32m":["🥦","🌲","🌵","🍏","🐲"],
-    "\u001b[0;33m":["🥨","🍁","🍪","📙","🔶"],
-    "\u001b[0;36m":["🧙","🧞‍♀️","🧞‍♂️","👮"],
-    "\u001b[1;30m":"👹👺💔😠🚩",
+    "\u001b[0;31m":['👠','🦀','🍒','🚨','⛔'],
+    "\u001b[0;32m":['🥦','🌲','🌵','🍏','🐲'],
+    "\u001b[0;33m":['🥨','🍁','🍪','📙','🔶'],
+    "\u001b[0;36m":['🧙','🧞‍♀️','🧞‍♂️','👮'],
+    "\u001b[1;30m":['👹','👺','💔','😠','🚩'],
     "TASK ": ['👷'+secrets.choice(fitz)+'️\uFE0F'+"TASK ","👷"+secrets.choice(fitz)+'\u200D'+'♀'+'️\uFE0F'+"TASK "],
     "RUNNING HANDLER ": ["👩"+secrets.choice(fitz)+'\u200D'+"✈"+'️\uFE0F'+"RUNNING HANDLER ","👨"+secrets.choice(fitz)+'\u200D'+"✈"+'️\uFE0F'+"RUNNING HANDLER "]
   }
