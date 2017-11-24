@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, request, render_template, session
+from flask import Flask, flash, redirect, request, render_template, session, send_file
 from flask_session import Session
 from flask_bootstrap import Bootstrap
 from wtforms import Form, BooleanField, StringField, SelectField, SubmitField, validators
@@ -105,6 +105,11 @@ def digitalocean():
 @app.route('/test')
 def test():
     return 'The app appears to be working correctly.'
+
+@app.route('/testemoji')
+def testemoji():
+    return send_file('allemoji.txt')
+
 
 @app.route('/random')
 def random():
@@ -314,6 +319,7 @@ def ansible_emojize(to_emojize):
   fitz = "🏻🏼🏽🏾🏿"
   replacements = {
     "\u001b[0m":"",
+    "\u001b[0;31m":["👠","🦀","🍒","🚨","⛔"],
     "\u001b[0;32m":["🥦","🌲","🌵","🍏","🐲"],
     "\u001b[0;33m":["🥨","🍁","🍪","📙","🔶"],
     "\u001b[0;36m":["🧙","🧞‍♀️","🧞‍♂️","👮"],
