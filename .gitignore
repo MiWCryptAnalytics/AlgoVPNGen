@@ -102,3 +102,6 @@ ENV/
 
 # flask session
 flask_session/
+
+# ignore
+ignore/

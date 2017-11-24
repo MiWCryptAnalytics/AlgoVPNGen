@@ -12,7 +12,7 @@ import io
 import hashlib
 from datetime import datetime
 import time
-
+import secrets
 
 
 # https://blog.miguelgrinberg.com/post/flask-socketio-and-the-user-session
@@ -81,10 +81,9 @@ def index():
     return render_template('index.html')
 
 @app.route('/random')
-def build():
+def random():
     roomhash = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()
     return render_template('build.html', async_mode=socketio.async_mode, roomhash=roomhash, action="/genrandom", title="Generate Randomness")
-
 
 @app.route('/test')
 def test():
@@ -139,7 +138,7 @@ def doaction():
   return "You are missing Cloud Provider API Credentials, Region or Servername from your session. Please reset."
 
 @app.route('/genrandom', methods=['POST'])
-def dotest():
+def genrandom():
   global sockets
   if not session.sid in sockets:
     return "Error: No connected websocket for {sid}".format(sid=session.sid)
@@ -158,7 +157,8 @@ def exec_thread(sid, shell, room):
     starttime = time.perf_counter()
     proc = subprocess.Popen(splitshell, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
-      socketio.emit('my_response', {'data': line.rstrip() }, namespace="/tty", room=room)
+      lineoutput = ansible_emojize(line.rstrip())
+      socketio.emit('my_response', {'data': lineoutput }, namespace="/tty", room=room)
       ## Have to sleep for 0 to flush buffer, to let it emit to the client
       socketio.sleep(0.01)
     #with subprocess.Popen(splitshell, bufsize=0, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as proc:
@@ -212,10 +212,14 @@ def background_thread():
 
 @socketio.on('join', namespace='/tty')
 def on_join(data):
+    if 'X-Forwarded-For' in request.headers:
+      real_ip = request.headers['X-Forwarded-For']
+    else:
+      real_ip = request.remote_addr
     room = data['room']
     join_room(room)
     emit('my_response', {'data': 'Joined Room: {room}'.format(room=room) })
-    print("SocketIO: Room %s was joined by %s" % (room, request.remote_addr))
+    print("SocketIO: Room %s was joined by %s" % (room, real_ip))
     return
 
 @socketio.on('my_ping', namespace='/tty')
@@ -224,10 +228,14 @@ def ping_pong():
 
 @socketio.on('leave', namespace='/tty')
 def on_leave(data):
+    if 'X-Forwarded-For' in request.headers:
+      real_ip = request.headers['X-Forwarded-For']
+    else:
+      real_ip = request.remote_addr
     room = data['room']
     leave_room(room)
     emit('my_response', {'data': 'Left Room: {room}'.format(room=room) })
-    print("SocketIO: Room %s was left by %s" % (room, request.remote_addr))
+    print("SocketIO: Room %s was left by %s" % (room, real_ip))
     return
 
 @socketio.on('disconnect_request', namespace='/tty')
@@ -259,3 +267,51 @@ def tty_disconnect():
 def build_do_cmd_string(token, region, name):
     #return "ls -al /tmp"
     return "heroku run -a algovpngen --type worker worker -e \"DO_ACCESS_TOKEN=%s;DO_REGION=%s;DO_SERVER_NAME=%s\"" % (token, region, name)
+
+
+def ansible_emojize(to_emojize):
+  output = to_emojize
+
+  ok = "ok"
+  okreplace = "\tok"
+  skipping = "skipping"
+  skipping_replace = "\tskipping"
+  changed = "changed"
+  changed_replace = "\tchanged"
+
+  ## Layout
+  # ANSI to Emoji
+  # New ones too, this wont work for many folks
+  #for chars in to_emojize:
+  #  print(chars)
+  layouts = {
+  "ok:" : "        ",
+  "changed:" : "        ",
+  "skipping" : "        ",
+  "FAILED" : "        ",
+  }
+
+  fitz = "🏻🏼🏽🏾🏿"
+  replacements = {
+    "\u001b[0m":"",
+    "\u001b[0;32m":"🥦🌲🌵🍏🐲",
+    "\u001b[0;33m":"🥨🍁🍪📙🔶",
+    "\u001b[0;36m":["🧙","🧞‍♀️","🧞‍♂️","👮"],
+    "\u001b[1;30m":"👹👺💔😠🚩",
+    "TASK ": ["👷"+secrets.choice(fitz)+"TrueASK ","👷"+secrets.choice(fitz)+'\u200D\u2640'+"TASK "],
+    "RUNNING HANDLER ": ["👩"+secrets.choice(fitz)+"‍✈️"+"RUNNING HANDLER ","👨‍"+secrets.choice(fitz)+"‍✈️"+"RUNNING HANDLER "]
+  }
+
+  for l in layouts.keys():
+    if l in output:
+      output = layouts[l] + output
+
+  for r in replacements.keys():
+    if r in output:
+      if (len(replacements[r])):
+        rd = secrets.choice(replacements[r])
+      else:
+        rd = replacements[r]
+      output = output.replace(r, rd)
+ 
+  return output
