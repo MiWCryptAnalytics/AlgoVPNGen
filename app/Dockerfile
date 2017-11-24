@@ -25,6 +25,7 @@ ENV HTTP_PASSWD=${HTTP_PASSWD}
 ENV PYTHONIOENCODING="utf-8"
 ENV LANG="en_US.UTF-8"
 ENV LC_CTYPE="en_US.UTF-8"
+ENV TERM="xterm"
 RUN printf "admin:$(openssl passwd -crypt ${HTTP_PASSWD}\n)" >> /etc/nginx/.htpasswd
 # Embed Heroku API Key into container
 ARG HEROKU_API_KEY
