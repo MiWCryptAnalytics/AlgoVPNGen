@@ -1,0 +1,517 @@
+
+Connected X-X-X-X-X
+Joined Room: XHASH
+Starting build...
+(This can take a few seconds to get started...)
+
+Running worker on algovpngen... starting, worker.5258 (Free)
+Running worker on algovpngen... connecting, worker.5258 (Free)
+Running worker on algovpngen... up, worker.5258 (Free)
+
+PLAY [Configure the server] ****************************************************
+
+TASK [setup] *******************************************************************
+[0;32mok: [localhost][0m
+
+TASK [Generate the SSH private key] ********************************************
+[0;33mchanged: [localhost][0m
+
+TASK [Generate the SSH public key] *********************************************
+[0;32mok: [localhost][0m
+
+TASK [Change mode for the SSH private key] *************************************
+[0;32mok: [localhost][0m
+
+TASK [Ensure the dynamic inventory exists] *************************************
+[0;33mchanged: [localhost][0m
+
+TASK [cloud-digitalocean : Set the DigitalOcean Access Token fact] *************
+[0;32mok: [localhost][0m
+
+TASK [cloud-digitalocean : Delete the existing Algo SSH keys] ******************
+[1;30mFAILED - RETRYING: TASK: cloud-digitalocean : Delete the existing Algo SSH keys (10 retries left).[0m
+[0;32mok: [localhost][0m
+
+TASK [cloud-digitalocean : Upload the SSH key] *********************************
+[0;33mchanged: [localhost][0m
+
+TASK [cloud-digitalocean : Creating a droplet...] ******************************
+[0;33mchanged: [localhost][0m
+
+TASK [cloud-digitalocean : Add the droplet to an inventory group] **************
+[0;33mchanged: [localhost][0m
+
+TASK [cloud-digitalocean : set_fact] *******************************************
+[0;32mok: [localhost][0m
+
+TASK [cloud-digitalocean : Tag the droplet] ************************************
+[0;33mchanged: [localhost][0m
+
+TASK [cloud-digitalocean : Get droplets] ***************************************
+[0;32mok: [localhost][0m
+
+TASK [cloud-digitalocean : Ensure the group digitalocean exists in the dynamic inventory file] ***
+[0;33mchanged: [localhost][0m
+
+TASK [cloud-digitalocean : Populate the dynamic inventory] *********************
+[0;33mchanged: [localhost] => (item={u'status': u'active', u'kernel': None, u'volume_ids': [], u'locked': False, u'name': u'pleasedeleteemojitest324', u'backup_ids': [], u'created_at': u'2017-11-23T20:42:50Z', u'snapshot_ids': [], u'size_slug': u'512mb', u'networks': {u'v4': [{u'type': u'public', u'netmask': u'255.255.255.0', u'ip_address': u'999.999.999.999', u'gateway': u'999.999.999.999'}], u'v6': [{u'type': u'public', u'netmask': 64, u'ip_address': u'X', u'gateway': u'X'}]}, u'next_backup_window': None, u'vcpus': 1, u'size': {u'price_monthly': 5.0, u'available': True, u'transfer': 1.0, u'price_hourly': 0.00744, u'regions': [u'ams2', u'ams3', u'blr1', u'fra1', u'lon1', u'nyc1', u'nyc2', u'nyc3', u'sfo1', u'sfo2', u'sgp1', u'tor1'], u'vcpus': 1, u'memory': 512, u'disk': 20, u'slug': u'512mb'}, u'image': {u'min_disk_size': 20, u'name': u'16.04.3 x64', u'created_at': u'2017-11-22T00:43:22Z', u'slug': u'ubuntu-16-04-x64', u'regions': [u'nyc1', u'sfo1', u'nyc2', u'ams2', u'sgp1', u'lon1', u'nyc3', u'ams3', u'fra1', u'tor1', u'sfo2', u'blr1'], u'id': 29529053, u'distribution': u'Ubuntu', u'type': u'snapshot', u'public': True, u'size_gigabytes': 0.31}, u'memory': 512, u'region': {u'available': True, u'sizes': [u'512mb', u'1gb', u'2gb', u'4gb', u'8gb', u'16gb', u'32gb', u'48gb', u'64gb'], u'slug': u'ams2', u'name': u'Amsterdam 2', u'features': [u'private_networking', u'backups', u'ipv6', u'metadata', u'install_agent']}, u'disk': 20, u'id': 72208222, u'tags': [u'environment:algo'], u'features': [u'ipv6']})[0m
+
+TASK [Wait until SSH becomes ready...] *****************************************
+[0;32mok: [localhost][0m
+
+TASK [A short pause, in order to be sure the instance is ready] ****************
+Pausing for 20 seconds
+(ctrl+C then 'C' = continue early, ctrl+C then 'A' = abort)
+
+[0;32mok: [localhost][0m
+
+TASK [Ensure the local ssh directory is exist] *********************************
+[0;33mchanged: [localhost][0m
+
+TASK [Copy the algo ssh key to the local ssh directory] ************************
+[0;33mchanged: [localhost][0m
+
+PLAY [Configure the server and install required software] **********************
+
+TASK [Check the system] ********************************************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [Ubuntu | Install prerequisites] ******************************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [Ubuntu | Configure defaults] *********************************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [FreeBSD / HardenedBSD | Install prerequisites] ***************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [FreeBSD / HardenedBSD | Configure defaults] ******************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [set_fact] ****************************************************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [Gather Facts] ************************************************************
+[0;32mok: [999.999.999.999][0m
+
+TASK [Ensure the algo ssh key exist on the server] *****************************
+[0;32mok: [999.999.999.999][0m
+
+TASK [Enable IPv6] *************************************************************
+[0;32mok: [999.999.999.999][0m
+
+TASK [Set facts if the deployment in a cloud] **********************************
+[0;32mok: [999.999.999.999][0m
+
+TASK [Generate password for the CA key] ****************************************
+[0;33mchanged: [999.999.999.999 -> localhost][0m
+
+TASK [Generate p12 export password] ********************************************
+[0;33mchanged: [999.999.999.999 -> localhost][0m
+
+TASK [Define password facts] ***************************************************
+[0;32mok: [999.999.999.999][0m
+
+TASK [Define the commonName] ***************************************************
+[0;32mok: [999.999.999.999][0m
+
+TASK [common : Install software updates] ***************************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [common : Check if reboot is required] ************************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [common : Reboot] *********************************************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [common : Wait until SSH becomes ready...] ********************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [common : Disable MOTD on login and SSHD] *********************************
+[0;33mchanged: [999.999.999.999] => (item={u'regexp': u'^session.*optional.*pam_motd.so.*', u'line': u'# MOTD DISABLED', u'file': u'/etc/pam.d/login'})[0m
+[0;33mchanged: [999.999.999.999] => (item={u'regexp': u'^session.*optional.*pam_motd.so.*', u'line': u'# MOTD DISABLED', u'file': u'/etc/pam.d/sshd'})[0m
+
+TASK [common : Loopback for services configured] *******************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [common : Loopback included into the network config] **********************
+[0;33mchanged: [999.999.999.999][0m
+
+RUNNING HANDLER [common : restart loopback] ************************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [common : set_fact] *******************************************************
+[0;32mok: [999.999.999.999][0m
+
+TASK [common : set_fact] *******************************************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [common : Loopback included into the rc config] ***************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [common : Enable the gateway features] ************************************
+[0;36mskipping: [999.999.999.999] => (item={u'value': u'"YES"', u'param': u'firewall_enable'}) [0m
+[0;36mskipping: [999.999.999.999] => (item={u'value': u'"open"', u'param': u'firewall_type'}) [0m
+[0;36mskipping: [999.999.999.999] => (item={u'value': u'"YES"', u'param': u'gateway_enable'}) [0m
+[0;36mskipping: [999.999.999.999] => (item={u'value': u'"YES"', u'param': u'natd_enable'}) [0m
+[0;36mskipping: [999.999.999.999] => (item={u'value': u'""', u'param': u'natd_interface'}) [0m
+[0;36mskipping: [999.999.999.999] => (item={u'value': u'"-dynamic -m"', u'param': u'natd_flags'}) [0m
+
+TASK [common : Install tools] **************************************************
+[0;33mchanged: [999.999.999.999] => (item=[u'git', u'screen', u'apparmor-utils', u'uuid-runtime', u'coreutils', u'iptables-persistent', u'cgroup-tools', u'openssl'])[0m
+
+TASK [common : Sysctl tuning] **************************************************
+[0;33mchanged: [999.999.999.999] => (item={u'item': u'net.ipv4.ip_forward', u'value': 1})[0m
+[0;33mchanged: [999.999.999.999] => (item={u'item': u'net.ipv4.conf.all.forwarding', u'value': 1})[0m
+[0;33mchanged: [999.999.999.999] => (item={u'item': u'net.ipv6.conf.all.forwarding', u'value': 1})[0m
+
+TASK [vpn : Ensure that the strongswan group exist] ****************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [vpn : Ensure that the strongswan user exist] *****************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [vpn : set_fact] **********************************************************
+[0;32mok: [999.999.999.999][0m
+
+TASK [vpn : Ubuntu | Install strongSwan] ***************************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [vpn : Ubuntu | Enforcing ipsec with apparmor] ****************************
+[0;36mskipping: [999.999.999.999] => (item=/usr/lib/ipsec/charon) [0m
+[0;36mskipping: [999.999.999.999] => (item=/usr/lib/ipsec/lookip) [0m
+[0;36mskipping: [999.999.999.999] => (item=/usr/lib/ipsec/stroke) [0m
+
+TASK [vpn : Ubuntu | Enable services] ******************************************
+[0;32mok: [999.999.999.999] => (item=apparmor)[0m
+[0;32mok: [999.999.999.999] => (item=strongswan)[0m
+[0;32mok: [999.999.999.999] => (item=netfilter-persistent)[0m
+
+TASK [vpn : Ubuntu | Ensure that the strongswan service directory exist] *******
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [vpn : Ubuntu | Setup the cgroup limitations for the ipsec daemon] ********
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [vpn : Iptables configured] ***********************************************
+[0;33mchanged: [999.999.999.999] => (item={u'dest': u'/etc/iptables/rules.v4', u'src': u'rules.v4.j2'})[0m
+
+TASK [vpn : Iptables configured] ***********************************************
+[0;33mchanged: [999.999.999.999] => (item={u'dest': u'/etc/iptables/rules.v6', u'src': u'rules.v6.j2'})[0m
+
+TASK [vpn : FreeBSD / HardenedBSD | Get the existing kernel parameters] ********
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : FreeBSD / HardenedBSD | Set the rebuild_needed fact] ***************
+[0;36mskipping: [999.999.999.999] => (item=IPSEC) [0m
+[0;36mskipping: [999.999.999.999] => (item=IPSEC_NAT_T) [0m
+[0;36mskipping: [999.999.999.999] => (item=crypto) [0m
+
+TASK [vpn : FreeBSD / HardenedBSD | Make the kernel config] ********************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : FreeBSD / HardenedBSD | Ensure the all options are enabled] ********
+[0;36mskipping: [999.999.999.999] => (item=options	IPSEC) [0m
+[0;36mskipping: [999.999.999.999] => (item=options IPSEC_NAT_T) [0m
+[0;36mskipping: [999.999.999.999] => (item=device	crypto) [0m
+
+TASK [vpn : HardenedBSD | Determine the sources] *******************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : FreeBSD | Determine the sources] ***********************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : FreeBSD / HardenedBSD | Increase the git postBuffer size] **********
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : FreeBSD / HardenedBSD | Fetching the sources...] *******************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : FreeBSD / HardenedBSD | Fetching the sources...] *******************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : FreeBSD / HardenedBSD | The kernel is being built...] **************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : FreeBSD / HardenedBSD | The kernel is being built...] **************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : FreeBSD / HardenedBSD | Reboot] ************************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : FreeBSD / HardenedBSD | Enable strongswan] *************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : Install strongSwan] ************************************************
+[0;32mok: [999.999.999.999][0m
+
+TASK [vpn : Setup the config files from our templates] *************************
+[0;33mchanged: [999.999.999.999] => (item={u'dest': u'/etc/strongswan.conf', u'src': u'strongswan.conf.j2', u'group': u'root', u'mode': u'0644', u'owner': u'root'})[0m
+[0;33mchanged: [999.999.999.999] => (item={u'dest': u'/etc/ipsec.conf', u'src': u'ipsec.conf.j2', u'group': u'root', u'mode': u'0644', u'owner': u'root'})[0m
+[0;33mchanged: [999.999.999.999] => (item={u'dest': u'/etc/ipsec.secrets', u'src': u'ipsec.secrets.j2', u'group': u'root', u'mode': u'0600', u'owner': u'strongswan'})[0m
+
+TASK [vpn : Get loaded plugins] ************************************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [vpn : Disable unneeded plugins] ******************************************
+[0;33mchanged: [999.999.999.999] => (item=xcbc)[0m
+[0;36mskipping: [999.999.999.999] => (item=kernel-netlink) [0m
+[0;33mchanged: [999.999.999.999] => (item=updown)[0m
+[0;36mskipping: [999.999.999.999] => (item=sha2) [0m
+[0;33mchanged: [999.999.999.999] => (item=gmp)[0m
+[0;36mskipping: [999.999.999.999] => (item=x509) [0m
+[0;33mchanged: [999.999.999.999] => (item=md4)[0m
+[0;33mchanged: [999.999.999.999] => (item=agent)[0m
+[0;33mchanged: [999.999.999.999] => (item=connmark)[0m
+[0;36mskipping: [999.999.999.999] => (item=random) [0m
+[0;36mskipping: [999.999.999.999] => (item=pgp) [0m
+[0;36mskipping: [999.999.999.999] => (item=pkcs7) [0m
+[0;33mchanged: [999.999.999.999] => (item=fips-prf)[0m
+[0;33mchanged: [999.999.999.999] => (item=sshkey)[0m
+[0;33mchanged: [999.999.999.999] => (item=sha1)[0m
+[0;36mskipping: [999.999.999.999] => (item=nonce) [0m
+[0;33mchanged: [999.999.999.999] => (item=md5)[0m
+[0;36mskipping: [999.999.999.999] => (item=aes) [0m
+[0;33mchanged: [999.999.999.999] => (item=resolve)[0m
+[0;33mchanged: [999.999.999.999] => (item=constraints)[0m
+[0;36mskipping: [999.999.999.999] => (item=socket-default) [0m
+[0;36mskipping: [999.999.999.999] => (item=stroke) [0m
+[0;36mskipping: [999.999.999.999] => (item=pkcs8) [0m
+[0;36mskipping: [999.999.999.999] => (item=pubkey) [0m
+[0;33mchanged: [999.999.999.999] => (item=pkcs1)[0m
+[0;36mskipping: [999.999.999.999] => (item=pem) [0m
+[0;36mskipping: [999.999.999.999] => (item=revocation) [0m
+[0;36mskipping: [999.999.999.999] => (item=gcm) [0m
+[0;33mchanged: [999.999.999.999] => (item=dnskey)[0m
+[0;36mskipping: [999.999.999.999] => (item=hmac) [0m
+[0;33mchanged: [999.999.999.999] => (item=attr)[0m
+[0;33mchanged: [999.999.999.999] => (item=test-vectors)[0m
+[0;33mchanged: [999.999.999.999] => (item=rc2)[0m
+[0;36mskipping: [999.999.999.999] => (item=openssl) [0m
+[0;36mskipping: [999.999.999.999] => (item=pkcs12) [0m
+
+TASK [vpn : Ensure that required plugins are enabled] **************************
+[0;36mskipping: [999.999.999.999] => (item=xcbc) [0m
+[0;33mchanged: [999.999.999.999] => (item=kernel-netlink)[0m
+[0;36mskipping: [999.999.999.999] => (item=updown) [0m
+[0;33mchanged: [999.999.999.999] => (item=sha2)[0m
+[0;36mskipping: [999.999.999.999] => (item=gmp) [0m
+[0;33mchanged: [999.999.999.999] => (item=x509)[0m
+[0;36mskipping: [999.999.999.999] => (item=md4) [0m
+[0;36mskipping: [999.999.999.999] => (item=agent) [0m
+[0;36mskipping: [999.999.999.999] => (item=connmark) [0m
+[0;33mchanged: [999.999.999.999] => (item=random)[0m
+[0;33mchanged: [999.999.999.999] => (item=pgp)[0m
+[0;36mskipping: [999.999.999.999] => (item=fips-prf) [0m
+[0;33mchanged: [999.999.999.999] => (item=pkcs7)[0m
+[0;36mskipping: [999.999.999.999] => (item=sshkey) [0m
+[0;36mskipping: [999.999.999.999] => (item=sha1) [0m
+[0;33mchanged: [999.999.999.999] => (item=nonce)[0m
+[0;36mskipping: [999.999.999.999] => (item=md5) [0m
+[0;33mchanged: [999.999.999.999] => (item=aes)[0m
+[0;36mskipping: [999.999.999.999] => (item=resolve) [0m
+[0;36mskipping: [999.999.999.999] => (item=constraints) [0m
+[0;33mchanged: [999.999.999.999] => (item=socket-default)[0m
+[0;33mchanged: [999.999.999.999] => (item=stroke)[0m
+[0;33mchanged: [999.999.999.999] => (item=pkcs8)[0m
+[0;33mchanged: [999.999.999.999] => (item=pubkey)[0m
+[0;36mskipping: [999.999.999.999] => (item=pkcs1) [0m
+[0;33mchanged: [999.999.999.999] => (item=pem)[0m
+[0;33mchanged: [999.999.999.999] => (item=revocation)[0m
+[0;33mchanged: [999.999.999.999] => (item=gcm)[0m
+[0;36mskipping: [999.999.999.999] => (item=dnskey) [0m
+[0;33mchanged: [999.999.999.999] => (item=hmac)[0m
+[0;36mskipping: [999.999.999.999] => (item=attr) [0m
+[0;36mskipping: [999.999.999.999] => (item=test-vectors) [0m
+[0;36mskipping: [999.999.999.999] => (item=rc2) [0m
+[0;33mchanged: [999.999.999.999] => (item=openssl)[0m
+[0;33mchanged: [999.999.999.999] => (item=pkcs12)[0m
+
+TASK [vpn : Ensure the pki directory does not exist] ***************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : Ensure the pki directories exist] **********************************
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=ecparams)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=certs)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=crl)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=newcerts)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=private)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=reqs)[0m
+
+TASK [vpn : Ensure the files exist] ********************************************
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=.rnd)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=private/.rnd)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=index.txt)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=index.txt.attr)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=serial)[0m
+
+TASK [vpn : Generate the openssl server configs] *******************************
+[0;33mchanged: [999.999.999.999 -> localhost][0m
+
+TASK [vpn : Build the CA pair] *************************************************
+[0;33mchanged: [999.999.999.999 -> localhost][0m
+
+TASK [vpn : Copy the CA certificate] *******************************************
+[0;33mchanged: [999.999.999.999 -> localhost][0m
+
+TASK [vpn : Generate the serial number] ****************************************
+[0;33mchanged: [999.999.999.999 -> localhost][0m
+
+TASK [vpn : Build the server pair] *********************************************
+[0;33mchanged: [999.999.999.999 -> localhost][0m
+
+TASK [vpn : Build the client's pair] *******************************************
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=dan)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=jack)[0m
+
+TASK [vpn : Build the client's p12] ********************************************
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=dan)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=jack)[0m
+
+TASK [vpn : Copy the p12 certificates] *****************************************
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=dan)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=jack)[0m
+
+TASK [vpn : Get active users] **************************************************
+[0;33mchanged: [999.999.999.999 -> localhost][0m
+
+TASK [vpn : Revoke non-existing users] *****************************************
+[0;36mskipping: [999.999.999.999] => (item=dan) [0m
+[0;36mskipping: [999.999.999.999] => (item=jack) [0m
+
+TASK [vpn : Genereate new CRL file] ********************************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : Copy the CRL to the vpn server] ************************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : Copy the keys to the strongswan directory] *************************
+[0;33mchanged: [999.999.999.999] => (item={u'dest': u'/etc/ipsec.d/cacerts/ca.crt', u'src': u'configs/999.999.999.999/pki/cacert.pem', u'group': u'root', u'mode': u'0600', u'owner': u'strongswan'})[0m
+[0;33mchanged: [999.999.999.999] => (item={u'dest': u'/etc/ipsec.d/certs/999.999.999.999.crt', u'src': u'configs/999.999.999.999/pki/certs/999.999.999.999.crt', u'group': u'root', u'mode': u'0600', u'owner': u'strongswan'})[0m
+[0;33mchanged: [999.999.999.999] => (item={u'dest': u'/etc/ipsec.d/private/999.999.999.999.key', u'src': u'configs/999.999.999.999/pki/private/999.999.999.999.key', u'group': u'root', u'mode': u'0600', u'owner': u'strongswan'})[0m
+
+TASK [vpn : Register p12 PayloadContent] ***************************************
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=dan)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=jack)[0m
+
+TASK [vpn : Set facts for mobileconfigs] ***************************************
+[0;32mok: [999.999.999.999 -> localhost][0m
+
+TASK [vpn : Build the mobileconfigs] *******************************************
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=(censored due to no_log))[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=(censored due to no_log))[0m
+
+TASK [vpn : Build the strongswan app android config] ***************************
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=(censored due to no_log))[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=(censored due to no_log))[0m
+
+TASK [vpn : Build the android helper html] *************************************
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=(censored due to no_log))[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=(censored due to no_log))[0m
+
+TASK [vpn : Build the client ipsec config file] ********************************
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=dan)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=jack)[0m
+
+TASK [vpn : Build the client ipsec secret file] ********************************
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=dan)[0m
+[0;33mchanged: [999.999.999.999 -> localhost] => (item=jack)[0m
+
+TASK [vpn : Create the windows check file] *************************************
+[0;36mskipping: [999.999.999.999][0m
+
+TASK [vpn : Check if the windows check file exists] ****************************
+[0;32mok: [999.999.999.999 -> localhost][0m
+
+TASK [vpn : Build the windows client powershell script] ************************
+[0;36mskipping: [999.999.999.999] => (item=dan) [0m
+[0;36mskipping: [999.999.999.999] => (item=jack) [0m
+
+TASK [vpn : Restrict permissions for the local private directories] ************
+[0;32mok: [999.999.999.999 -> localhost] => (item=configs/999.999.999.999)[0m
+
+RUNNING HANDLER [vpn : restart strongswan] *************************************
+[0;33mchanged: [999.999.999.999][0m
+
+RUNNING HANDLER [vpn : daemon-reload] ******************************************
+[0;33mchanged: [999.999.999.999][0m
+
+RUNNING HANDLER [vpn : restart iptables] ***************************************
+[0;33mchanged: [999.999.999.999][0m
+
+TASK [vpn : strongSwan started] ************************************************
+[0;32mok: [999.999.999.999][0m
+
+TASK [debug] *******************************************************************
+[0;32mok: [999.999.999.999] => {
+    "msg": [
+        [
+            "\"#                          Congratulations!                            #\"",
+            "\"#                     Your Algo server is running.                     #\"",
+            "\"#    Config files and certificates are in the ./configs/ directory.    #\"",
+            "\"#              Go to https://whoer.net/ after connecting               #\"",
+            "\"#        and ensure that all your traffic passes through the VPN.      #\"",
+            "\"#               Local DNS resolver 172.16.0.1              #\"",
+            ""
+        ],
+        "    \"#                The p12 and SSH keys password for new users is XXXX             #\"\n",
+        "    \"#                  The CA key password is XXXXX                 #\"\n",
+        "    \"#      Shell access: ssh -i configs/algo.pem root@999.999.999.999        #\"\n"
+    ]
+}[0m
+
+TASK [Delete the CA key] *******************************************************
+[0;36mskipping: [999.999.999.999][0m
+
+PLAY RECAP *********************************************************************
+[0;33m999.999.999.999[0m                : [0;32mok=60  [0m [0;33mchanged=45  [0m unreachable=0    failed=0
+[0;33mlocalhost[0m                  : [0;32mok=19  [0m [0;33mchanged=10  [0m unreachable=0    failed=0
+
+--------------------------------------------
+ Zipping configs
+--------------------------------------------
+-----ALGO CONFIG ZIP - START COPY BELOW-----
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+-----ALGO CONFIG ZIP - END COPY ABOVE-----
+
+1. Scroll up to the section headed 'Congratulations!'  Your Algo server is running
+   and record the p12/ssh password, and the CA key password.
+
+2. Copy the text from between the ALGO CONFIG ZIP sections. Save to a file named config.txt
+   This is a compressed encoded file containing the algo configuration, including scripts and authentication keys
+
+3. Decode and uncompress the configuration files
+   On linux/macos:
+   $ base64 -d configs.txt > configs.zip
+   $ unzip configs.zip
+
+   On windows:
+
+   certutil -decode configs.txt configs.zip
+   powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('configs.zip', 'algo-configs'); }"
+   ...
+   lol j/k use unzip with explorer
+
+Check out the algo readme on configuring the clients: https://github.com/trailofbits/algo/blob/master/README.md#configure-the-vpn-clients
+
+--------------------------------
+Thank you for using algo and AlgoVPNGen

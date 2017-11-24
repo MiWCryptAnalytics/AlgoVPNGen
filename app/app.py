@@ -75,19 +75,10 @@ class DigitalOceanForm(FlaskForm):
     ])
     submitbutton = SubmitField(label='Go')
 
-
+### Application Functions
 @app.route('/')
 def index():
     return render_template('index.html')
-
-@app.route('/random')
-def random():
-    roomhash = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()
-    return render_template('build.html', async_mode=socketio.async_mode, roomhash=roomhash, action="/genrandom", title="Generate Randomness")
-
-@app.route('/test')
-def test():
-    return 'The app appears to be working correctly.'
 
 @app.route('/digitalocean', methods=['GET', 'POST'])
 def digitalocean():
@@ -106,6 +97,24 @@ def digitalocean():
             flash("error : {error}".format(error=error_message))
     
     return render_template('digitalocean.html', form=form, title="Algo @ Digital Ocean - Please enter build settings:")
+
+###
+### Test Functions
+###
+
+@app.route('/test')
+def test():
+    return 'The app appears to be working correctly.'
+
+@app.route('/random')
+def random():
+    roomhash = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()
+    return render_template('build.html', async_mode=socketio.async_mode, roomhash=roomhash, action="/genrandom", title="Generate Randomness")
+
+@app.route('/emoji')
+def emoji():
+    roomhash = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()
+    return render_template('build.html', async_mode=socketio.async_mode, roomhash=roomhash, action="/genemoji", title='Generate Emoji')
 
 ### AJAX METHODS
 
@@ -134,7 +143,7 @@ def doaction():
       session['DO_ACCESS_TOKEN']=None
       session['DO_REGION']=None
       session['DO_SERVER_NAME']=None
-      return "Starting build...\n(This can take a few seconds to get started...)\n"
+      return "Starting build...\n(This can take a few seconds to get started...)"
   return "You are missing Cloud Provider API Credentials, Region or Servername from your session. Please reset."
 
 @app.route('/genrandom', methods=['POST'])
@@ -146,7 +155,18 @@ def genrandom():
   room = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()      
   global workers
   workers[session.sid] = {'cmd': "openssl rand -base64 2048", 'name': 'Generate Randomness'}
-  return "Generating randomness\n"  
+  return "Generating randomness"
+
+@app.route('/genemoji', methods=['POST'])
+def genemoji():
+  global sockets
+  if not session.sid in sockets:
+    return "Error: No connected websocket for {sid}".format(sid=session.sid)
+  line = ""
+  room = hashlib.sha256(session.sid.encode('utf-8')).hexdigest()      
+  global workers
+  workers[session.sid] = {'cmd': "cat emoji.txt", 'name': 'Generate Emoji'}
+  return "Generating emoji text"
 
 ### Thread handling methods
 
@@ -298,8 +318,8 @@ def ansible_emojize(to_emojize):
     "\u001b[0;33m":"🥨🍁🍪📙🔶",
     "\u001b[0;36m":["🧙","🧞‍♀️","🧞‍♂️","👮"],
     "\u001b[1;30m":"👹👺💔😠🚩",
-    "TASK ": ["👷"+secrets.choice(fitz)+"TrueASK ","👷"+secrets.choice(fitz)+'\u200D\u2640'+"TASK "],
-    "RUNNING HANDLER ": ["👩"+secrets.choice(fitz)+"‍✈️"+"RUNNING HANDLER ","👨‍"+secrets.choice(fitz)+"‍✈️"+"RUNNING HANDLER "]
+    "TASK ": ['👷'+'\u200D'+secrets.choice(fitz)+'️\uFE0F'+"TASK ","👷"+'\u200D'+secrets.choice(fitz)+'\u200D'+'♀'+'️\uFE0F'+"TASK "],
+    "RUNNING HANDLER ": ["👩"+secrets.choice(fitz)+'\u200D'+"✈"+'️\uFE0F'+"RUNNING HANDLER ","👨"+secrets.choice(fitz)+'\u200D'+"✈"+'️\uFE0F'+"RUNNING HANDLER "]
   }
 
   for l in layouts.keys():
